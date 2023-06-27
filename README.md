@@ -6,9 +6,27 @@ aioodbc and `async def` for path operation functions.
 
 ### How to run:
 
-To launch uvicorn:
+Create database backend
+```bash
+docker pull mcr.microsoft.com/mssql/server:2017-latest
+
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Password_123" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 
 ```
+
+Download and unzip to database folder
+https://excelbianalytics.com/wp/wp-content/uploads/2020/09/5m-Sales-Records.zip
+
+Load testing
+```bash
+docker pull grafana/k6
+
+docker run --rm -i grafana/k6 run --vus 1 --duration 1s - <loadtesting/script.js
+
+```
+
+To launch uvicorn:
+```bash
 uvicorn sql_app.main:app --reload
 ```
 

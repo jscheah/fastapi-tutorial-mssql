@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException
@@ -44,7 +45,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @app.post("/users/{user_id}/items/", response_model=schemas.Item)
 def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
+        user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
 ):
     return crud.create_user_item(db=db, item=item, user_id=user_id)
 
@@ -52,4 +53,20 @@ def create_item_for_user(
 @app.get("/items/", response_model=List[schemas.Item])
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
+    return items
+
+
+@app.get("/sales/", )
+def read_sales(db: Session = Depends(get_db)):
+    print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}: sales begin")
+    items = crud.get_sales(db)
+    print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}: sales done")
+    return items
+
+
+@app.get("/sales2/", )
+def read_sales2():
+    print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}: sales begin")
+    items = crud.get_sales2()
+    print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}: sales done")
     return items

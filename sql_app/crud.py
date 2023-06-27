@@ -1,6 +1,12 @@
+import datetime
+import time
+
+import pandas as pd
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from . import models, schemas
+from .database import execute_query
 
 
 def get_user(db: Session, user_id: int):
@@ -42,9 +48,28 @@ def get_items(db: Session, skip: int = 0, limit: int = 100):
     )
 
 
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+query = """
+SELECT * 
+FROM [testdb].[dbo].[Sales] WITH (NOLOCK)
+where Order_Priority = 'H' and sales_channel = 'Online' and Region = 'Europe'
+    """
+
+
+def get_sales(db: Session):
+    results = db.execute(text(query))
+    before_time = time.time()
+    records = results.fetchall()
+    df = pd.DataFrame(records)
+    after_time = time.time()
+    print(
+        f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}: {len(df)} fetched in {(after_time - before_time) * 1000} ms")
+    return len(df)
+
+
+def get_sales2():
+    before_time = time.time()
+    results = execute_query(query)
+    after_time = time.time()
+    print(
+        f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}: {len(results)} fetched in {(after_time - before_time) * 1000} ms")
+    return len(results)

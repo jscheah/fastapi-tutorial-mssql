@@ -1,0 +1,1 @@
+bcp testdb.dbo.Sales in 5m_Sales_Records.csv -U sa -P Password_123 -t , -r \n -c
